@@ -41,6 +41,8 @@ $Server = @{
 	MaxPlayers = "32"
 	#Cổng công cộng cho máy chủ Palworld.
 	GamePort = "8211"
+	#Cổng ngang hàng,
+	QueryPort = "27015"
 	#Bật tắt Remote Console (RCON) để quản trị máy chủ.
 	RCONEnabled = "True"
 	#Cổng giao tiếp Remote Console (RCON).

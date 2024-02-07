@@ -55,7 +55,7 @@ $ServerProcessInfo = New-Object System.Diagnostics.ProcessStartInfo($ServerProce
 $ServerProcessInfo.RedirectStandardError = $true
 $ServerProcessInfo.RedirectStandardOutput = $true
 $ServerProcessInfo.UseShellExecute = $false
-$ServerProcessInfo.Arguments = "-log -nosteam -useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS EpicApp=PalServer"
+$ServerProcessInfo.Arguments = "-port=$($Server.GamePort) -queryport=$($Server.QueryPort) -log -nosteam -useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS EpicApp=PalServer"
 if(!(Test-Path -Path $ServerProcess -ErrorAction SilentlyContinue)){
 	if (!(Test-Path ".\$($Config.ServerFolder)")){
 		$null = New-Item -itemType Directory -Path ".\" -Name $Config.ServerFolder -ErrorAction SilentlyContinue
@@ -128,7 +128,7 @@ OptionSettings=(Difficulty=$($Server.Difficulty),DayTimeSpeedRate=$($Server.DayT
 	$ServerRunning.Start() | Out-Null
 	While(!$ServerRunning.HasExited){
 		Start-Sleep -Seconds 1
-		$Time = Get-Date -UFormat "%H:%M"		
+		$Time = Get-Date -UFormat "%H:%M"
 		if(!$MsgServerStarted){
 			$Message = "[$Time]: Khởi động máy chủ ""$($Server.SessionName)"" thành công!"
 			Write-Host $Message -ForegroundColor "Green" -BackgroundColor "Black"
