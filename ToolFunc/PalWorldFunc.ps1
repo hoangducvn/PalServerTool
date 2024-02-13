@@ -1,5 +1,4 @@
-﻿#https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/write-progress-across-multiple-threads?view=powershell-7.4
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+﻿$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 #Nhập cài đặt:
 try {
   Import-Module -Name ".\ToolConfig\PalWorldConfig.psm1"
