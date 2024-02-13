@@ -1,4 +1,5 @@
-﻿$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+﻿#https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/write-progress-across-multiple-threads?view=powershell-7.4
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 #Nhập cài đặt:
 try {
   Import-Module -Name ".\ToolConfig\PalWorldConfig.psm1"
@@ -46,6 +47,7 @@ $MsgCheckConnect = $false
 $MsgInternalSuccess = $false
 $MsgExternalSuccess = $false
 $MsgExternalError = $false
+$backuped = $false
 $TimeOutCount = 0
 $ServerProcess = ".\$($Config.ServerFolder)\$($Server.SeverPath)\Pal\Binaries\Win64\PalServer-Win64-Test-Cmd.exe"
 $ServerSettingPath = ".\$($Config.ServerFolder)\$($Server.SeverPath)\Pal\Saved\Config\WindowsServer\PalWorldSettings.ini"
@@ -83,6 +85,7 @@ if (!(Test-Path -Path $ServerLog -ErrorAction SilentlyContinue)){
 while (!(Test-Path -Path $ServerLog -ErrorAction SilentlyContinue)){}
 Clear-Content $ServerLog -ErrorAction SilentlyContinue
 $StartCheckVer = Get-Date
+$StartCheckBackup = Get-Date
 While($true){
 	Start-Sleep -Seconds 1
 	if($Server.UpdateOnStart -eq "True"){
@@ -270,6 +273,21 @@ OptionSettings=(Difficulty=$($Server.Difficulty),DayTimeSpeedRate=$($Server.DayT
 				}
 			}
 			$StartCheckVer = Get-Date
+		}
+		if($TimerCheckVer -ge $StartCheckBackup.AddMinutes($Server.BackupTime)){
+			if(!$backuped){
+				$backupfilename = (Get-Date).toString("dd-MM-yyyy-HH-mm")
+				$backupPath = ".\$($Config.ServerFolder)\$($Server.SeverPath)\Pal\Saved\SaveGames\" + $backupfilename + ".zip"
+				$Message = "[$Time]: Tiến hành sao lưu dữ liệu máy chủ ""$($Server.SessionName)""!"
+				Write-Host $Message -ForegroundColor "Green" -BackgroundColor "Black"
+				Write-Log -LogPath $ServerLog -LogString $Message
+				$null = Compress-Archive -Path ".\$($Config.ServerFolder)\$($Server.SeverPath)\Pal\Saved\SaveGames\0" -DestinationPath $backupPath -Force
+				$null = Get-ChildItem –Path ".\$($Config.ServerFolder)\$($Server.SeverPath)\Pal\Saved\SaveGames\" -Recurse -File -Include *.zip | Where-Object {($_.LastWriteTime -lt (Get-Date).AddDays(-$Server.DeleteOlderThanXDays))} | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+				$StartCheckBackup = Get-Date
+				$backuped = $true
+			}
+		}else{
+			$backuped = $false
 		}
 		foreach ($RestartTime in $Server.RestartTime){
 			if($Time -eq $RestartTime){

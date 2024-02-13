@@ -29,6 +29,10 @@ $Server = @{
 	MsgBeforRestart = @(15, 10, 5, 4, 3, 2, 1)
 	#Chu kỳ(phút) kiểm tra phiên bản máy chủ khi đang chạy, nếu có cập nhật thì tiến hành khởi động lại và cập nhật(Yêu cầu UpdateOnStart = "True")
 	CheckVerTime = 15
+	#Chu kỳ(phút) sao lưu máy chủ một lần
+	BackupTime = 30
+	#Xóa tệp sao lưu cũ hơn x ngày:
+	DeleteOlderThanXDays = 2
 	#Tên máy chủ:
 	SessionName = "Hoàng Đức Test Server"
 	#Thông tin máy chủ:
